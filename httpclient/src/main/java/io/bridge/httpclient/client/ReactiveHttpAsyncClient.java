@@ -24,6 +24,7 @@ import reactor.core.publisher.Mono;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -110,8 +111,8 @@ public class ReactiveHttpAsyncClient implements ReactiveHttpClient {
             public void completed(HttpResponse httpResponse) {
               try {
                 Response.Builder responseBuilder = Response.builder();
-                Map<String, Collection<String>> headerMap = Stream.of(httpResponse.getAllHeaders())
-                        .collect(Collectors.toMap(header -> header.getName(), header -> Arrays.asList(new String[]{header.getValue()})));
+                Map<String, Collection<String>> headerMap = new HashMap<>();
+                        Stream.of(httpResponse.getAllHeaders()).forEach(item ->headerMap.put(item.getName(),Arrays.asList(new String[]{item.getValue()})));
                 responseBuilder.request(request).status(httpResponse.getStatusLine().getStatusCode())
                     .headers(headerMap);
 
